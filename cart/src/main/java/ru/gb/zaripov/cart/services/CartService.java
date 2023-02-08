@@ -32,7 +32,7 @@ public class CartService {
         cart.add(productDto);
     }
 
-    public void clear() {
+    public void clear(String username) {
         cart.clear();
     }
 }

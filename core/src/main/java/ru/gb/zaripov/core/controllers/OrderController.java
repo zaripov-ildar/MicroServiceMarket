@@ -19,5 +19,6 @@ public class OrderController {
     public void createNewOrder(@RequestHeader String username){
         CartDto cartDto = cartServiceIntegration.getUserCart(username);
         orderService.createNewOrder(username, cartDto);
+        cartServiceIntegration.clear(username);
     }
 }

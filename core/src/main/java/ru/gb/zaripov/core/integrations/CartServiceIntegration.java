@@ -26,4 +26,13 @@ public class CartServiceIntegration {
                 .bodyToMono(CartDto.class)
                 .block();
     }
+
+    public void clear(String username) {
+        cartServiceWebClient
+                .get()
+                .uri("/api/v1/cart/clear/" + username)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
 }
