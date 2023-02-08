@@ -5,14 +5,14 @@ import java.math.BigDecimal;
 public class CartItemDto {
     private Long productId;
     private String productTitle;
-    private BigDecimal price;
+    private BigDecimal pricePerProduct;
     private BigDecimal totalPrice;
     private int quantity;
 
-    public CartItemDto(Long productId, String productTitle, BigDecimal price, BigDecimal totalPrice, int quantity) {
+    public CartItemDto(Long productId, String productTitle, BigDecimal pricePerProduct, BigDecimal totalPrice, int quantity) {
         this.productId = productId;
         this.productTitle = productTitle;
-        this.price = price;
+        this.pricePerProduct = pricePerProduct;
         this.totalPrice = totalPrice;
         this.quantity = quantity;
     }
@@ -36,12 +36,12 @@ public class CartItemDto {
         this.productTitle = productTitle;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getPricePerProduct() {
+        return pricePerProduct;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setPricePerProduct(BigDecimal pricePerProduct) {
+        this.pricePerProduct = pricePerProduct;
     }
 
     public BigDecimal getTotalPrice() {

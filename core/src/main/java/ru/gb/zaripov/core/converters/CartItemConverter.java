@@ -15,7 +15,7 @@ public class CartItemConverter {
     public OrderItem toOrderItem(CartItemDto cartItemDto, Order order) {
         OrderItem orderItem = new OrderItem();
         orderItem.setOrder(order);
-        orderItem.setPricePerProduct(cartItemDto.getPrice());
+        orderItem.setPricePerProduct(cartItemDto.getPricePerProduct());
         orderItem.setQuantity(cartItemDto.getQuantity());
         orderItem.setPrice(cartItemDto.getTotalPrice());
         orderItem.setProduct(

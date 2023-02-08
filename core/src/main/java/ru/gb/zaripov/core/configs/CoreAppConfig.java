@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
         CartServiceIntegrationProperties.class
 )
 @RequiredArgsConstructor
-public class AppConfig {
+public class CoreAppConfig {
     private final CartServiceIntegrationProperties cartSIP;
 
     @Bean

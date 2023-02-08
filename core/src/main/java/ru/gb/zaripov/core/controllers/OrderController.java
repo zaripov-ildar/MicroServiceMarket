@@ -10,6 +10,7 @@ import ru.gb.zaripov.core.services.OrderService;
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class OrderController {
     private final CartServiceIntegration cartServiceIntegration;
     private final OrderService orderService;
