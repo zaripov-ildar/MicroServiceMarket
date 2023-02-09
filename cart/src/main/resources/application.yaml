@@ -5,7 +5,7 @@ server:
 
 integrations:
   core-service:
-    url: http://localhost:8189/core/
+    url: http://localhost:5555/core/
     connect-timeout: 5000
     read-timeout: 10000
     write-timeout: 5000

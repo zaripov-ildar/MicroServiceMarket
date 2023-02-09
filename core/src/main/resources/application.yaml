@@ -21,7 +21,7 @@ spring:
 
 integrations:
   cart-service:
-    url: http://localhost:8199/cart/
+    url: http://localhost:5555/cart/
     connect-timeout: 5000
     read-timeout: 10000
     write-timeout: 5000

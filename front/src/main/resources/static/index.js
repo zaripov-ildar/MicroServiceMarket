@@ -49,14 +49,14 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
     };
 
     $scope.loadProducts = function () {
-        $http.get('http://localhost:8189/core/api/v1/products')
+        $http.get('http://localhost:5555/core/api/v1/products')
             .then(function (response) {
                 $scope.products = response.data;
             });
     };
 
     $scope.loadCart = function () {
-        $http.get('http://localhost:8199/cart/api/v1/cart')
+        $http.get('http://localhost:5555/cart/api/v1/cart')
             .then(function (response) {
                 $scope.cart = response.data;
                 console.log($scope.cart);
@@ -64,19 +64,18 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
     };
 
     $scope.addToCart = function (id) {
-        $http.get('http://localhost:8199/cart/api/v1/cart/add/' + id)
+        $http.get('http://localhost:5555/cart/api/v1/cart/add/' + id)
             .then(function (response) {
                 $scope.loadCart();
             });
     }
 
     $scope.createOrder = function () {
-        $http.post('http://localhost:8189/core/api/v1/orders', {}, {headers: {'username': 'Bob'}})
+        $http.post('http://localhost:5555/core/api/v1/orders', {}, {headers: {'username': 'Bob'}})
             .then(function (response) {
                 alert("Order was created");
                 $scope.loadCart();
             });
-
     }
 
     // $scope.deleteProduct = function (id) {
