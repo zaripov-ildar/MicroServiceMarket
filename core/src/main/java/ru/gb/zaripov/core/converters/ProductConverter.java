@@ -1,6 +1,9 @@
 package ru.gb.zaripov.core.converters;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.gb.zaripov.api.ProductDto;
 import ru.gb.zaripov.core.entities.Product;
