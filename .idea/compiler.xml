@@ -22,6 +22,7 @@
       <module name="cart" options="-parameters" />
       <module name="core" options="-parameters" />
       <module name="front" options="-parameters" />
+      <module name="gateway" options="-parameters" />
     </option>
   </component>
 </project>
