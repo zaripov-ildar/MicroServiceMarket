@@ -18,7 +18,8 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
     }
 
     $scope.tryToAuth = function () {
-        $http.post('http://localhost:5555/auth/authenticate', $scope.user)
+        console.log($scope.user)
+        $http.post('http://localhost:5555/auth/api/v1/auth', $scope.user)
             .then(function successCallback(response) {
                 if (response.data.token) {
                     $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
@@ -41,11 +42,7 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
     };
 
     $scope.isUserLoggedIn = function () {
-        if ($localStorage.marchMarketUser) {
-            return true;
-        } else {
-            return false;
-        }
+        return !!$localStorage.marchMarketUser;
     };
 
     $scope.loadProducts = function () {
@@ -71,7 +68,8 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
     }
 
     $scope.createOrder = function () {
-        $http.post('http://localhost:5555/core/api/v1/orders', $scope.cart, {headers: {'username': 'Bob'}})
+        console.log("trying to send order..."+ $localStorage.marchMarketUser)
+        $http.post('http://localhost:5555/core/api/v1/orders', {}, {headers: {'username': $localStorage.marchMarketUser.username}})
             .then(function (response) {
                 alert("Order was created");
                 $scope.loadCart();

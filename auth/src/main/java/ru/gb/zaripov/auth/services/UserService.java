@@ -37,4 +37,9 @@ public class UserService {
     private Optional<User> findUserByName(String username) {
         return userRepository.findByUsername(username);
     }
+
+    public String getPasswordByName(String username) {
+        User user =  userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not exist", username)));
+        return user.getPassword();
+    }
 }

@@ -7,6 +7,7 @@ import ru.gb.zaripov.api.ProductDto;
 import ru.gb.zaripov.core.converters.ProductConverter;
 import ru.gb.zaripov.core.services.ProductService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
