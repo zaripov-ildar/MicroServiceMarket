@@ -71,7 +71,7 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
     }
 
     $scope.createOrder = function () {
-        $http.post('http://localhost:5555/core/api/v1/orders', {}, {headers: {'username': 'Bob'}})
+        $http.post('http://localhost:5555/core/api/v1/orders', $scope.cart, {headers: {'username': 'Bob'}})
             .then(function (response) {
                 alert("Order was created");
                 $scope.loadCart();
