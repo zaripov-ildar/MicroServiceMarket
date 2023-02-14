@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gb.zaripov.api.ProductDto;
+import ru.gb.zaripov.api.exceptions.ResourceNotFoundException;
 import ru.gb.zaripov.cart.integrations.ProductServiceIntegration;
 import ru.gb.zaripov.cart.utils.Cart;
 
@@ -18,9 +19,8 @@ public class CartService {
     private Cart cart;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         cart = new Cart();
-        cart.setItems(new ArrayList<>());
     }
 
     public Cart getCurrentCart() {
@@ -29,6 +29,9 @@ public class CartService {
 
     public void addToCart(Long productId) {
         ProductDto productDto = productServiceIntegration.getProductDtoById(productId);
+        if (productDto == null) {
+            throw new ResourceNotFoundException(String.format("Product with id %s doesn't exist", productId));
+        }
         cart.add(productDto);
     }
 

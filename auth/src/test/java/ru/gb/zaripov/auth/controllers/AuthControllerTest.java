@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@RequiredArgsConstructor
 class AuthControllerTest {
     private final String USERNAME = "bob";
     private final String CORRECT_PASSWORD = "correct password";
@@ -28,7 +27,6 @@ class AuthControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private UserRepository userRepository;
-
 
     @BeforeEach
     public void setUp() {

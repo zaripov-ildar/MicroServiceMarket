@@ -2,15 +2,12 @@ package ru.gb.zaripov.auth.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ru.gb.zaripov.auth.AdditionalMethods;
 import ru.gb.zaripov.auth.entities.Role;
 import ru.gb.zaripov.auth.entities.User;
 import ru.gb.zaripov.auth.repositories.UserRepository;
@@ -20,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.gb.zaripov.auth.AdditionalMethods.initUserRepository;
 
-@SpringBootTest
+@SpringBootTest(classes = UserService.class)
 class UserServiceTest {
 
     @MockBean
