@@ -12,7 +12,6 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-
     public Optional<Category> findByTitle(String categoryTitle) {
         return categoryRepository.findByTitle(categoryTitle);
     }

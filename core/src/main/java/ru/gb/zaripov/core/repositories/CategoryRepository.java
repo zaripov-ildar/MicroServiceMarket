@@ -7,6 +7,5 @@ import ru.gb.zaripov.core.services.CategoryService;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
     Optional<Category> findByTitle(String categoryTitle);
 }

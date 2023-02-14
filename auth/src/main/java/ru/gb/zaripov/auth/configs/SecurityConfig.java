@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,13 +26,12 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() {
         return authentication -> {
             String username = (String) authentication.getPrincipal();
-            String password = (String) authentication.getPrincipal();
-            String encodedPassword = passwordEncoder().encode(password);
+            String password = (String) authentication.getCredentials();
             String usersPassword = userService.getPasswordByName(username);
-            if (!usersPassword.equals(encodedPassword)) {
+            if (passwordEncoder().matches(password, usersPassword)) {
                 return authentication;
             }
-            throw new RuntimeException("wrong password!"); //FIXME: handle the exception
+            throw new BadCredentialsException("wrong password!");
         };
     }
 

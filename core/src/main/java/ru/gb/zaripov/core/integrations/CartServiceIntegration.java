@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.gb.zaripov.api.CartDto;
-import ru.gb.zaripov.core.exceptions.ResourceNotFoundException;
+import ru.gb.zaripov.api.exceptions.ResourceNotFoundException;
 
 @Component
 @RequiredArgsConstructor

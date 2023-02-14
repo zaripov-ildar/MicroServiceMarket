@@ -3,12 +3,13 @@ package ru.gb.zaripov.core.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gb.zaripov.api.ProductDto;
+import ru.gb.zaripov.api.exceptions.ResourceNotFoundException;
 import ru.gb.zaripov.core.converters.ProductConverter;
 import ru.gb.zaripov.core.entities.Product;
-import ru.gb.zaripov.core.exceptions.ResourceNotFoundException;
 import ru.gb.zaripov.core.repositories.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,8 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product findById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Can't find product #" + id));
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
     }
 
     public void createNewProduct(ProductDto productDto) {
@@ -29,6 +30,9 @@ public class ProductService {
     }
 
     public void deleteById(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Can't find product #" + id);
+        }
         productRepository.deleteById(id);
     }
 }

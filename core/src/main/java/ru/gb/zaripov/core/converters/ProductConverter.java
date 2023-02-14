@@ -3,8 +3,8 @@ package ru.gb.zaripov.core.converters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.gb.zaripov.api.ProductDto;
+import ru.gb.zaripov.api.exceptions.ResourceNotFoundException;
 import ru.gb.zaripov.core.entities.Product;
-import ru.gb.zaripov.core.exceptions.ResourceNotFoundException;
 import ru.gb.zaripov.core.services.CategoryService;
 
 @Component
