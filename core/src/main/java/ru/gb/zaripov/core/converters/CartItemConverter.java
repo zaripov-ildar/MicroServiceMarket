@@ -19,7 +19,7 @@ public class CartItemConverter {
         orderItem.setQuantity(cartItemDto.getQuantity());
         orderItem.setPrice(cartItemDto.getTotalPrice());
         orderItem.setProduct(
-                productService.findById(cartItemDto.getProductId())
+                productService.findById(cartItemDto.getProductId()).get()
         );
         return orderItem;
     }

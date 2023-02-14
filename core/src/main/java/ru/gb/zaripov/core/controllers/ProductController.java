@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.zaripov.api.ProductDto;
+import ru.gb.zaripov.api.exceptions.ResourceNotFoundException;
 import ru.gb.zaripov.core.converters.ProductConverter;
 import ru.gb.zaripov.core.services.ProductService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -28,7 +28,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductDto getProductById(@PathVariable Long id) {
-        return productConverter.toDto(productService.findById(id));
+        return productConverter.toDto(productService.findById(id).orElseThrow(() -> new ResourceNotFoundException("Can't find product #" + id)));
     }
 
     @PostMapping
