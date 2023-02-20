@@ -1,40 +1,73 @@
-angular.module('market', ['ngStorage']).controller('indexController', function ($scope, $http, $localStorage) {
-    if ($localStorage.marchMarketUser) {
-        try {
-            let jwt = $localStorage.marchMarketUser.token;
-            let payload = JSON.parse(atob(jwt.split('.')[1]));
-            let currentTime = parseInt(new Date().getTime() / 1000);
-            if (currentTime > payload.exp) {
-                console.log("Token is expired!!!");
-                delete $localStorage.marchMarketUser;
-                $http.defaults.headers.common.Authorization = '';
-            }
-        } catch (e) {
-        }
+(function () {
+    angular.module('market', ['ngStorage', 'ngRoute'])
+        .config(config)
+        .run(run);
 
-        if ($localStorage.marchMarketUser) {
-            $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.marchMarketUser.token;
+    function config($routeProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: 'welcome/welcome.html',
+                controller: 'welcomeController'
+            })
+            .when('/products', {
+                templateUrl: 'products/products.html',
+                controller: 'productsController'
+            })
+            .when('/cart', {
+                templateUrl: 'cart/cart.html',
+                controller: 'cartController'
+            })
+            .when('/orders', {
+                templateUrl: 'orders/orders.html',
+                controller: 'ordersController'
+            })
+            .otherwise({
+                redirectTo: '/'
+            });
+    }
+
+    function run($rootScope, $http, $localStorage) {
+        if ($localStorage.marketUser) {
+            try {
+                let jwt = $localStorage.marketUser.token;
+                let payload = JSON.parse(atob(jwt.split('.')[1]));
+                let currentTime = parseInt(new Date().getTime() / 1000);
+                if (currentTime > payload.exp) {
+                    console.log("Token is expired!!!");
+                    delete $localStorage.marketUser;
+                    $http.defaults.headers.common.Authorization = '';
+                }
+            } catch (e) {
+            }
+
+            if ($localStorage.marketUser) {
+                $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.marketUser.token;
+                $http.defaults.headers.common.username = $scope.user.username;
+            }
+            if (!$localStorage.guestCartId) {
+                $http.get('http://localhost:5555/cart/api/v1/cart/generate_id')
+                    .then(function (response) {
+                        $localStorage.guestCartId = response.data.value;
+                    });
+            }
+
         }
     }
-    $scope.filter = {
-        page: 1,
-        pageSize: 100,
-        minPrice: null,
-        maxPrice: null,
-        titlePart: null
-    };
+})();
 
-
+angular.module('market').controller('indexController', function ($rootScope, $scope, $http, $location, $localStorage) {
     $scope.tryToAuth = function () {
-        console.log($scope.user)
-        $http.post('http://localhost:5555/auth/api/v1/auth', $scope.user)
+        $http.post('http://localhost:5555/auth/authenticate', $scope.user)
             .then(function successCallback(response) {
                 if (response.data.token) {
                     $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
-                    $localStorage.marchMarketUser = {username: $scope.user.username, token: response.data.token};
+                    $http.defaults.headers.common.username = $scope.user.username;
+                    $localStorage.marketUser = {username: $scope.user.username, token: response.data.token};
 
                     $scope.user.username = null;
                     $scope.user.password = null;
+
+                    $location.path('/');
                 }
             }, function errorCallback(response) {
             });
@@ -42,70 +75,17 @@ angular.module('market', ['ngStorage']).controller('indexController', function (
 
     $scope.tryToLogout = function () {
         $scope.clearUser();
+        $location.path('/');
     };
 
     $scope.clearUser = function () {
-        delete $localStorage.marchMarketUser;
+        delete $localStorage.marketUser;
         $http.defaults.headers.common.Authorization = '';
     };
 
-    $scope.isUserLoggedIn = function () {
-        return !!$localStorage.marchMarketUser;
+    $rootScope.isUserLoggedIn = function () {
+        return !!$localStorage.marketUser;
     };
 
-    $scope.loadProducts = function () {
-        console.log($scope.filter);
-        $http({
-            method: 'GET',
-            url: 'http://localhost:5555/core/api/v1/products',
-            params: $scope.filter
-        }).then(function (response) {
-            console.log(response);
-            $scope.products = response.data.content;
-        });
 
-
-    };
-
-    $scope.loadCart = function () {
-        $http.get('http://localhost:5555/cart/api/v1/cart')
-            .then(function (response) {
-                $scope.cart = response.data;
-                console.log($scope.cart);
-            });
-    };
-
-    $scope.addToCart = function (id) {
-        $http.get('http://localhost:5555/cart/api/v1/cart/add/' + id)
-            .then(function (response) {
-                $scope.loadCart();
-            });
-    }
-
-    $scope.createOrder = function () {
-        console.log("trying to send order..." + $localStorage.marchMarketUser)
-        $http.post('http://localhost:5555/core/api/v1/orders', {}, {headers: {'username': $localStorage.marchMarketUser.username}})
-            .then(function (response) {
-                alert("Order was created");
-                $scope.loadCart();
-            });
-    }
-
-    // $scope.deleteProduct = function (id) {
-    //     $http.delete('http://localhost:5555/core/api/v1/products/' + id)
-    //         .then(function (response) {
-    //             $scope.loadProducts();
-    //         });
-    // }
-
-    // $scope.createNewProduct = function () {
-    //     $http.post('http://localhost:5555/core/api/v1/products', $scope.newProduct)
-    //         .then(function (response) {
-    //             $scope.newProduct = null;
-    //             $scope.loadProducts();
-    //         });
-    // }
-
-    $scope.loadProducts();
-    $scope.loadCart();
 });

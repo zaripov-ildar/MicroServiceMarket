@@ -1,0 +1,47 @@
+<div>
+    <h3>Filter</h3>
+    <form class="row g-3" ng-submit="loadProducts()">
+        <div class="col-auto">
+            <input type="number" class="form-control" id="min_price" ng-model="filter.minPrice"
+                   placeholder="Minimal price">
+        </div>
+        <div class="col-auto">
+            <input type="number" class="form-control" id="max_price" ng-model="filter.maxPrice"
+                   placeholder="Maximal price">
+        </div>
+        <div class="col-auto">
+            <input type="text" class="form-control" id="title_part" ng-model="filter.titlePart"
+                   placeholder="Title part">
+        </div>
+        <div class="col-auto">
+            <input type="text" class="form-control" id="page_to_show" ng-model="filter.pageSize"
+                   placeholder= "Pages to show"}>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Find</button>
+        </div>
+    </form>
+    <p></p>
+    <h3>Список товаров</h3>
+    <p></p>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Название</td>
+            <td>Цена</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="p in products">
+            <td>{{p.id}}</td>
+            <td>{{p.title}}</td>
+            <td>{{p.price}}</td>
+            <td>
+                <button class="btn btn-primary" ng-click="addToCart(p.id)">Добавить в корзину</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

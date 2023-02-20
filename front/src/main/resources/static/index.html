@@ -10,6 +10,8 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-route.min.js"></script>
+
     <script src="index.js"></script>
 </head>
 
@@ -20,7 +22,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Market</a>
+                    <a class="nav-link" href="#!/">Market</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/products">Каталог товаров</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/cart">Корзина</a>
+                </li>
+                <li class="nav-item" ng-show="isUserLoggedIn()">
+                    <a class="nav-link" href="#!/orders">Мои заказы</a>
                 </li>
                 <li class="nav-item" ng-show="!isUserLoggedIn()">
                     <form class="align-middle" ng-submit="tryToAuth()">
@@ -43,89 +54,18 @@
             </ul>
         </div>
     </nav>
-    <p></p>
-    <h3>Filter</h3>
-    <form class="row g-3" ng-submit="loadProducts()">
-                <div class="col-auto">
-                    <input type="number" class="form-control" id="min_price" ng-model="filter.minPrice" placeholder="Minimal price">
-                </div>
-                <div class="col-auto">
-                    <input type="number" class="form-control" id="max_price" ng-model="filter.maxPrice" placeholder="Maximal price">
-                </div>
-                <div class="col-auto">
-                    <input type="text" class="form-control" id="title_part" ng-model="filter.titlePart" placeholder="Title part">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-3">Find</button>
-                </div>
-            </form>
-    <p></p>
-    <h3>Список товаров</h3>
-    <p></p>
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <td>ID</td>
-            <td>Название</td>
-            <td>Цена</td>
-            <td></td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="p in products">
-            <td>{{p.id}}</td>
-            <td>{{p.title}}</td>
-            <td>{{p.price}}</td>
-            <td>
-                <button class="btn btn-primary" ng-click="addToCart(p.id)">Добавить в корзину</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <p></p>
-    <h3>Корзина</h3>
-    <p></p>
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <td>Название</td>
-            <td>Количество</td>
-            <td>Цена</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="ci in cart.cartItems">
-            <td>{{ci.productTitle}}</td>
-            <td>{{ci.quantity}}</td>
-            <td>{{ci.pricePerProduct + ' x ' + ci.quantity + ' = ' + ci.totalPrice}}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Итого:</td>
-            <td>{{cart.totalPrice}}</td>
-        </tr>
-        </tbody>
-    </table>
-    <p></p>
-    <button class="btn btn-primary" ng-click="createOrder()">Оформить заказ</button>
 
-<!--    <p></p>-->
-<!--    <h3>Добавить продукт</h3>-->
-<!--    <p></p>-->
-<!--    <form class="row g-3" ng-submit="createNewProduct()">-->
-<!--        <div class="col-auto">-->
-<!--            <input type="text" class="form-control" id="newProductTitle" ng-model="newProduct.title" placeholder="Название">-->
-<!--        </div>-->
-<!--        <div class="col-auto">-->
-<!--            <input type="number" class="form-control" id="newProductPrice" ng-model="newProduct.price" placeholder="Цена">-->
-<!--        </div>-->
-<!--        <div class="col-auto">-->
-<!--            <input type="text" class="form-control" id="newProductCategoryTitle" ng-model="newProduct.categoryTitle" placeholder="Название категории">-->
-<!--        </div>-->
-<!--        <div class="col-auto">-->
-<!--            <button type="submit" class="btn btn-primary mb-3">Создать</button>-->
-<!--        </div>-->
-<!--    </form>-->
+
+
+
+    <ng-view></ng-view>
+
+    <script src="index.js"></script>
+    <script src="products/products.js"></script>
+    <script src="cart/cart.js"></script>
+
+    <script src="orders/orders.js"></script>
+    <script src="welcome/welcome.js"></script>
 </div>
 </body>
 </html>
