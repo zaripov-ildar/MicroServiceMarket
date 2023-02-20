@@ -30,7 +30,6 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<?> createToken(@RequestBody JwtRequest jwtRequest) {
-        log.info("{} tries to connect",jwtRequest.getUsername());
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
         } catch (BadCredentialsException bce) {

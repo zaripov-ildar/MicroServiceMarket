@@ -1,4 +1,4 @@
-angular.module('market').controller('productsController', function ($scope, $http) {
+angular.module('market').controller('productsController', function ($scope, $http, $localStorage) {
     $scope.filter = {
         page: 1,
         pageSize: 5,
@@ -20,10 +20,8 @@ angular.module('market').controller('productsController', function ($scope, $htt
     };
 
     $scope.addToCart = function (id) {
-        $http.get('http://localhost:5555/cart/api/v1/cart/' + $localStorage.guestCartId + 'add/' + id)
-            .then(function (response) {
-                $scope.loadCart();
-            });
+        console.log($localStorage.guestCartId )
+        $http.get('http://localhost:5555/cart/api/v1/cart/' + $localStorage.guestCartId + '/add/' + id)
     }
 
 

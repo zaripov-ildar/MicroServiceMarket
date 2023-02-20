@@ -42,10 +42,11 @@
 
             if ($localStorage.marketUser) {
                 $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.marketUser.token;
-                $http.defaults.headers.common.username = $scope.user.username;
+                // $http.defaults.headers.common.username = $scope.user.username;
             }
             if (!$localStorage.guestCartId) {
-                $http.get('http://localhost:5555/cart/api/v1/cart/generate_id')
+                console.log("asking guest cart id")
+                $http.get('http://localhost:5555/cart/api/v1/cart/generateId')
                     .then(function (response) {
                         $localStorage.guestCartId = response.data.value;
                     });
@@ -57,7 +58,7 @@
 
 angular.module('market').controller('indexController', function ($rootScope, $scope, $http, $location, $localStorage) {
     $scope.tryToAuth = function () {
-        $http.post('http://localhost:5555/auth/authenticate', $scope.user)
+        $http.post('http://localhost:5555/auth//api/v1/auth', $scope.user)
             .then(function successCallback(response) {
                 if (response.data.token) {
                     $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
@@ -67,11 +68,18 @@ angular.module('market').controller('indexController', function ($rootScope, $sc
                     $scope.user.username = null;
                     $scope.user.password = null;
 
+                    $scope.nameCart();
+
                     $location.path('/');
                 }
             }, function errorCallback(response) {
             });
     };
+
+    $scope.nameCart = function (){
+        $http.get('http://localhost:5555/cart/api/v1/cart/name/' + $localStorage.guestCartId)
+    }
+
 
     $scope.tryToLogout = function () {
         $scope.clearUser();

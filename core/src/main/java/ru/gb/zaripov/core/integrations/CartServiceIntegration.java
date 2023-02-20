@@ -15,7 +15,7 @@ public class CartServiceIntegration {
     public CartDto getUserCart(String username) {
         return cartServiceWebClient
                 .get()
-                .uri("/api/v1/cart")
+                .uri("/api/v1/cart/0")
                 .header("username", username)
                 .retrieve()
                 .onStatus(

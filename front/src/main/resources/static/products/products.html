@@ -2,24 +2,29 @@
     <h3>Filter</h3>
     <form class="row g-3" ng-submit="loadProducts()">
         <div class="col-auto">
+            <label for="min_price">Minimal price</label>
             <input type="number" class="form-control" id="min_price" ng-model="filter.minPrice"
                    placeholder="Minimal price">
         </div>
         <div class="col-auto">
+            <label for="max_price">Maximal price</label>
             <input type="number" class="form-control" id="max_price" ng-model="filter.maxPrice"
                    placeholder="Maximal price">
         </div>
         <div class="col-auto">
+            <label for="title_part">Title part</label>
             <input type="text" class="form-control" id="title_part" ng-model="filter.titlePart"
                    placeholder="Title part">
         </div>
         <div class="col-auto">
+            <label for="page_to_show">Товаров на странице</label>
             <input type="text" class="form-control" id="page_to_show" ng-model="filter.pageSize"
-                   placeholder= "Pages to show"}>
+            placeholder= "Pages to show"}>
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary mb-3">Find</button>
         </div>
+
     </form>
     <p></p>
     <h3>Список товаров</h3>
