@@ -7,7 +7,7 @@ angular.module('market').controller('productsController', function ($scope, $htt
         titlePart: null
     };
 
-    $scope.loadProducts = function () {
+    $scope.loadProducts = function (page = 1) {
         console.log($scope.filter);
         $scope.filter.page = page
         $http({
@@ -17,6 +17,7 @@ angular.module('market').controller('productsController', function ($scope, $htt
         }).then(function (response) {
             console.log(response.data);
             $scope.products = response.data.products;
+            $scope.generatePagesList(response.data.totalPages);
         });
     };
 
@@ -25,6 +26,13 @@ angular.module('market').controller('productsController', function ($scope, $htt
         $http.get('http://localhost:5555/cart/api/v1/cart/' + $localStorage.guestCartId + '/add/' + id)
     }
 
+    $scope.generatePagesList = function (totalPages) {
+        out = [];
+        for (let i = 0; i < totalPages; i++) {
+            out.push(i + 1);
+        }
+        $scope.pagesList = out;
+    }
 
     $scope.loadProducts();
 });
