@@ -4,15 +4,13 @@ angular.module('market').controller('cartController', function ($scope, $http, $
             .then(function (response) {
                 $scope.cart = response.data;
             });
-
-
     };
 
     $scope.createOrder = function () {
         if (!$localStorage.marketUser) {
             $scope.guestCreateOrder();
         } else
-            $http.post('http://localhost:5555/core/api/v1/orders')
+            $http.post('http://localhost:5555/core/api/v1/orders/' + $localStorage.guestCartId)
                 .then(function (response) {
                     $scope.loadCart();
                 });

@@ -9,3 +9,9 @@ integrations:
     connect-timeout: 5000
     read-timeout: 10000
     write-timeout: 5000
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: pass
