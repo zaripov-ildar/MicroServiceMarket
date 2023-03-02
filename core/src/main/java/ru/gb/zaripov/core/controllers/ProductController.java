@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class ProductController {
     private final ProductService productService;
     private final ProductConverter productConverter;
