@@ -26,24 +26,50 @@
             });
     }
 
-    function run($rootScope, $http, $localStorage) {
-        if ($localStorage.marketUser) {
-            try {
-                let jwt = $localStorage.marketUser.token;
-                let payload = JSON.parse(atob(jwt.split('.')[1]));
-                let currentTime = parseInt(new Date().getTime() / 1000);
-                if (currentTime > payload.exp) {
-                    console.log("Token is expired!!!");
-                    delete $localStorage.marketUser;
-                    $http.defaults.headers.common.Authorization = '';
-                }
-            } catch (e) {
-            }
+    function getUrlVars() {
+        const vars = {};
+        window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
 
-            if ($localStorage.marketUser) {
-                $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.marketUser.token;
-                // $http.defaults.headers.common.username = $scope.user.username;
+
+    function run($rootScope, $http, $localStorage) {
+        $http.parseJwt = (token) => {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
             }
+        };
+        let code = getUrlVars()['code'];
+        if (code) {
+            const params = new URLSearchParams({
+                grant_type: 'authorization_code',
+                client_id: 'marketUnsafe',
+                code: code,
+                redirect_url: 'http://localhost:8019/front'
+
+            });
+            $http({
+                method: "POST",
+                url: 'http://localhost:8150/realms/master/protocol/openid-connect/token',
+                data: params.toString(),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function (response) {
+                if (response.data.access_token) {
+                    $localStorage.headers = {
+                        Authorization: 'Bearer ' + response.data.access_token,
+                        refresh_token: response.data.refresh_token,
+                        username: $http.parseJwt(response.data.access_token).sub,
+                        'Content-type':'application/x-www-form-urlencoded'
+                    }
+                    window.location.href = '/front';
+                }
+            })
         }
 
         if (!$localStorage.guestCartId) {
@@ -56,42 +82,29 @@
     }
 })();
 
+
 angular.module('market').controller('indexController', function ($rootScope, $scope, $http, $location, $localStorage) {
     $scope.tryToAuth = function () {
-        $http.post('http://localhost:5555/auth//api/v1/auth', $scope.user)
-            .then(function successCallback(response) {
-                if (response.data.token) {
-                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
-                    // $http.defaults.headers.common.username = $scope.user.username;
-                    $localStorage.marketUser = {username: $scope.user.username, token: response.data.token};
-
-                    $scope.user.username = null;
-                    $scope.user.password = null;
-
-                    $location.path('/');
-                }
-            }, function errorCallback(response) {
-            });
+        window.location.href = 'http://localhost:8150/realms/master/protocol/openid-connect/auth?response_type=code&client_id=marketUnsafe&redirect_url=http://localhost:8019/front';
     };
 
     $scope.tryToLogout = function () {
         $scope.clearUser();
-        $location.path('/');
+        window.location.href = '/front';
         $http.get('http://localhost:5555/cart/api/v1/cart/generateId')
             .then(function (response) {
                 $localStorage.guestCartId = response.data.value;
                 $scope.loadCart();
             });
-
-
     };
 
     $scope.clearUser = function () {
-        delete $localStorage.marketUser;
-        $http.defaults.headers.common.Authorization = '';
+        delete $localStorage.headers;
     };
 
-    $rootScope.isUserLoggedIn = function () {
-        return !!$localStorage.marketUser;
+    $scope.isUserLoggedIn = function () {
+        console.log("user logged in");
+        // fixme: create normal checking
+        return !!$localStorage.headers;
     };
 });

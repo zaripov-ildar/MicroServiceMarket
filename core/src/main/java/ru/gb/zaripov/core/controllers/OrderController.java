@@ -7,6 +7,7 @@ import ru.gb.zaripov.api.OrderDto;
 import ru.gb.zaripov.core.converters.OrderConverter;
 import ru.gb.zaripov.core.services.OrderService;
 
+
 import java.util.List;
 
 @RestController
@@ -19,13 +20,13 @@ public class OrderController {
 
     @PostMapping("/{cartId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewOrder(@RequestHeader String username, @PathVariable String cartId){
+    public void createNewOrder(@RequestHeader String username, @PathVariable String cartId) {
         orderService.createNewOrder(username, cartId);
 
     }
 
     @GetMapping()
-    public List<OrderDto> getOrders(@RequestHeader String username){
+    public List<OrderDto> getOrders(@RequestHeader String username) {
         return orderService.findByUserName(username)
                 .stream()
                 .map(orderConverter::toOrderDto)

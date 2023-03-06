@@ -7,13 +7,17 @@ angular.module('market').controller('cartController', function ($scope, $http, $
     };
 
     $scope.createOrder = function () {
-        if (!$localStorage.marketUser) {
+        if (!$scope.isUserLoggedIn()) {
             $scope.guestCreateOrder();
         } else
-            $http.post('http://localhost:5555/core/api/v1/orders/' + $localStorage.guestCartId)
-                .then(function (response) {
-                    $scope.loadCart();
-                });
+            $http({
+                method: "POST",
+                url: 'http://localhost:5555/core/api/v1/orders/' + $localStorage.guestCartId,
+                headers: $localStorage.headers
+            }).then(function () {
+                $scope.loadCart();
+            });
+
     }
 
     $scope.guestCreateOrder = function () {
@@ -21,4 +25,5 @@ angular.module('market').controller('cartController', function ($scope, $http, $
     }
 
     $scope.loadCart();
+
 });
