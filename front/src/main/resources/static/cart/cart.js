@@ -7,21 +7,15 @@ angular.module('market').controller('cartController', function ($scope, $http, $
     };
 
     $scope.createOrder = function () {
-        if (!$scope.isUserLoggedIn()) {
-            $scope.guestCreateOrder();
-        } else
-            $http({
-                method: "POST",
-                url: 'http://localhost:5555/core/api/v1/orders/' + $localStorage.guestCartId,
-                headers: $localStorage.headers
-            }).then(function () {
-                $scope.loadCart();
-            });
+        if ($localStorage.headers) {
+            $http.post('http://localhost:5555/core/api/v1/orders/' + $localStorage.guestCartId)
+                .then(function () {
+                    $scope.loadCart();
+                });
+        } else {
+            alert('Для оформления заказа необходимо войти в учетную запись');
+        }
 
-    }
-
-    $scope.guestCreateOrder = function () {
-        alert('Для оформления заказа необходимо войти в учетную запись');
     }
 
     $scope.loadCart();

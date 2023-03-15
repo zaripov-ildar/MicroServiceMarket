@@ -18,10 +18,10 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="auth" options="" />
-      <module name="cart" options="" />
+      <module name="auth" options="-parameters" />
+      <module name="cart" options="-parameters" />
       <module name="core" options="-parameters" />
-      <module name="front" options="" />
+      <module name="front" options="-parameters" />
       <module name="gateway" options="-parameters" />
     </option>
   </component>
