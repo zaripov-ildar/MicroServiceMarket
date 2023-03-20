@@ -1,6 +1,7 @@
 package ru.gb.zaripov.core.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 @Table(name = "products")
 @Data
 @NoArgsConstructor
+@Builder
 public class Product extends BaseEntity {
     @Column
     private String title;
