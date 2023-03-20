@@ -20,8 +20,8 @@ public class OrderService {
     private final CartServiceIntegration cartServiceIntegration;
 
 
-    public void createNewOrder(String username) {
-        CartDto cartDto = cartServiceIntegration.getUserCart(username);
+    public void createNewOrder(String username, String cartId) {
+        CartDto cartDto = cartServiceIntegration.getUserCart(cartId);
         Order order = new Order();
         order.setUsername(username);
         order.setTotalPrice(cartDto.getTotalPrice());
@@ -31,7 +31,7 @@ public class OrderService {
                         .collect(Collectors.toList())
         );
         orderRepository.save(order);
-        cartServiceIntegration.clear(username);
+        cartServiceIntegration.clear(cartId);
     }
 
     public List<Order> findByUserName(String username) {

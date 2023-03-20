@@ -6,20 +6,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import ru.gb.zaripov.auth.entities.Role;
 import ru.gb.zaripov.auth.entities.User;
 import ru.gb.zaripov.auth.services.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -36,8 +38,8 @@ public class SecurityConfig {
             String password = (String) authentication.getCredentials();
 
             User user = userService.findUserByName(username)
-                    .orElseThrow(()->new BadCredentialsException(String.format("user name '%s' not found", username)));
-            if (!passwordEncoder().matches(password, user.getPassword())){
+                    .orElseThrow(() -> new BadCredentialsException(String.format("user name '%s' not found", username)));
+            if (!passwordEncoder().matches(password, user.getPassword())) {
                 throw new BadCredentialsException("Wrong password!");
             }
             return new UsernamePasswordAuthenticationToken(
@@ -52,20 +54,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .cors().disable()
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/core", "/cart").authenticated()
-                        .anyRequest().permitAll()
+        return http.authorizeHttpRequests()
+                .anyRequest().authenticated()
+//                .requestMatchers("/auth/**").permitAll()
+                .and()
+                .oauth2ResourceServer(
+                        configurer -> configurer.jwt(jwtConfigurer -> {
+                            JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+                            converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+                                List<String> roles = new ArrayList<>();
+                                Map<String, Object> resourceAccess = jwt.getClaimAsMap("resource_access");
+                                resourceAccess.values().stream()
+                                        .map(name -> ((Map<String, Object>) name).get("roles"))
+                                        .forEach(roleMap -> roles.addAll((List<String>) roleMap));
+
+                                return roles.stream()
+                                        .map(SimpleGrantedAuthority::new)
+                                        .map(it -> (GrantedAuthority) it)
+                                        .toList();
+                            });
+                        })
                 )
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .headers().frameOptions().disable()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-        return http.build();
+                .build();
     }
 
     @Bean

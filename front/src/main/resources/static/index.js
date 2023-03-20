@@ -1,99 +1,125 @@
 (function () {
-    angular.module('market', ['ngStorage', 'ngRoute'])
-        .config(config)
-        .run(run);
+        angular.module('market', ['ngStorage', 'ngRoute'])
+            .config(config)
+            .run(run);
 
-    function config($routeProvider) {
-        $routeProvider
-            .when('/', {
-                templateUrl: 'welcome/welcome.html',
-                controller: 'welcomeController'
-            })
-            .when('/products', {
-                templateUrl: 'products/products.html',
-                controller: 'productsController'
-            })
-            .when('/cart', {
-                templateUrl: 'cart/cart.html',
-                controller: 'cartController'
-            })
-            .when('/orders', {
-                templateUrl: 'orders/orders.html',
-                controller: 'ordersController'
-            })
-            .otherwise({
-                redirectTo: '/'
+
+        function config($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'welcome/welcome.html',
+                    controller: 'welcomeController'
+                })
+                .when('/products', {
+                    templateUrl: 'products/products.html',
+                    controller: 'productsController'
+                })
+                .when('/cart', {
+                    templateUrl: 'cart/cart.html',
+                    controller: 'cartController'
+                })
+                .when('/orders', {
+                    templateUrl: 'orders/orders.html',
+                    controller: 'ordersController'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                });
+        }
+
+        function getUrlVars() {
+            const vars = {};
+            window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = value;
             });
-    }
+            return vars;
+        }
 
-    function run($rootScope, $http, $localStorage) {
-        if ($localStorage.marketUser) {
+        function parseJwt(token) {
             try {
-                let jwt = $localStorage.marketUser.token;
-                let payload = JSON.parse(atob(jwt.split('.')[1]));
-                let currentTime = parseInt(new Date().getTime() / 1000);
-                if (currentTime > payload.exp) {
-                    console.log("Token is expired!!!");
-                    delete $localStorage.marketUser;
-                    $http.defaults.headers.common.Authorization = '';
-                }
+                return JSON.parse(atob(token.split('.')[1]));
             } catch (e) {
+                return null;
+            }
+        }
+
+        function isTokenExpired(jwt) {
+            let payload = JSON.parse(atob(jwt.split('.')[1]));
+            let currentTime = parseInt(new Date().getTime() / 1000);
+            console.log('curr time:' + currentTime);
+            console.log('exp time:' + payload.exp);
+            return currentTime > payload.exp
+        }
+
+
+        function run($rootScope, $http, $localStorage) {
+            let code = getUrlVars()['code'];
+            if (code) {
+                const params = new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    client_id: 'marketUnsafe',
+                    code: code,
+                    redirect_url: 'http://localhost:8019/front'
+
+                });
+                $http({
+                    method: "POST",
+                    url: 'http://localhost:8150/realms/master/protocol/openid-connect/token',
+                    data: params.toString(),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(function (response) {
+                    if (response.data.access_token) {
+
+                        $localStorage.headers = {
+                            Authorization: 'Bearer ' + response.data.access_token,
+                            refresh_token: response.data.refresh_token,
+                            username: parseJwt(response.data.access_token).sub,
+                            'Content-type': 'application/x-www-form-urlencoded'
+                        }
+                        window.location.href = '/front';
+                    }
+                })
+            }
+            if ($localStorage.headers) {
+                let token = $localStorage.headers.Authorization.substring(7);
+                if (isTokenExpired(token)) {
+                    delete $localStorage.headers;
+                    $http.defaults.headers.common.Authorization = '';
+                    window.location.href = '/front';
+                    alert("Token expired!")
+                }
+                if ($localStorage.headers) {
+                    $http.defaults.headers.common = $localStorage.headers
+                }
             }
 
-            if ($localStorage.marketUser) {
-                $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.marketUser.token;
-                // $http.defaults.headers.common.username = $scope.user.username;
-            }
             if (!$localStorage.guestCartId) {
-                console.log("asking guest cart id")
                 $http.get('http://localhost:5555/cart/api/v1/cart/generateId')
                     .then(function (response) {
                         $localStorage.guestCartId = response.data.value;
                     });
             }
-
         }
     }
-})();
+)
+();
 
 angular.module('market').controller('indexController', function ($rootScope, $scope, $http, $location, $localStorage) {
-    $scope.tryToAuth = function () {
-        $http.post('http://localhost:5555/auth//api/v1/auth', $scope.user)
-            .then(function successCallback(response) {
-                if (response.data.token) {
-                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
-                    $http.defaults.headers.common.username = $scope.user.username;
-                    $localStorage.marketUser = {username: $scope.user.username, token: response.data.token};
 
-                    $scope.user.username = null;
-                    $scope.user.password = null;
+        $scope.tryToAuth = function () {
+            window.location.href = 'http://localhost:8150/realms/master/protocol/openid-connect/auth?response_type=code&client_id=marketUnsafe&redirect_url=http://localhost:8019/front';
+        };
 
-                    $scope.nameCart();
+        $scope.tryToLogout = function () {
+            delete $localStorage.headers;
+            window.location.href = 'http://localhost:8150/realms/master/protocol/openid-connect/logout?client_id=marketUnsafe&post_logout_redirect_uri=http://localhost:8019/front';
+        };
 
-                    $location.path('/');
-                }
-            }, function errorCallback(response) {
-            });
-    };
-
-    $scope.nameCart = function (){
-        $http.get('http://localhost:5555/cart/api/v1/cart/name/' + $localStorage.guestCartId)
+        $scope.isUserLoggedIn = function () {
+            return $localStorage.headers;
+        };
     }
-
-
-    $scope.tryToLogout = function () {
-        $scope.clearUser();
-        $location.path('/');
-    };
-
-    $scope.clearUser = function () {
-        delete $localStorage.marketUser;
-        $http.defaults.headers.common.Authorization = '';
-    };
-
-    $rootScope.isUserLoggedIn = function () {
-        return !!$localStorage.marketUser;
-    };
-
-
-});
+)
+;
