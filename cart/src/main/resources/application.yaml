@@ -9,6 +9,7 @@ integrations:
     connect-timeout: 5000
     read-timeout: 10000
     write-timeout: 5000
+#    вот он redis
 spring:
   data:
     redis:

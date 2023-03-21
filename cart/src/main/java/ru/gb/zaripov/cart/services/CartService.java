@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class CartService {
     private final ProductServiceIntegration productServiceIntegration;
-
+    //вот он redis
     private final RedisTemplate<String, Object> redisTemplate;
 
 
