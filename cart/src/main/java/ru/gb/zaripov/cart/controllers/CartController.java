@@ -12,26 +12,23 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cart")
-@CrossOrigin("*")
 public class CartController {
     private final CartService cartService;
     private final CartConverter cartConverter;
 
     @GetMapping("/{userCartId}")
-    public CartDto getCurrentCart(@RequestHeader(required = false) String username, @PathVariable String userCartId) {
-        String currentCartId = selectCartId(username, userCartId);
-        return cartConverter.toCartDto(cartService.getCurrentCart(currentCartId));
+    public CartDto getCurrentCart(@PathVariable String userCartId) {
+        return cartConverter.toCartDto(cartService.getCurrentCart(userCartId));
     }
 
     @GetMapping("/{userCartId}/add/{productId}")
-    public void addProductToCart(@RequestHeader (required = false) String username, @PathVariable String userCartId, @PathVariable Long productId) {
-        String currentCartId = selectCartId(username, userCartId);
-        cartService.addToCart(currentCartId, productId);
+    public void addProductToCart(@PathVariable String userCartId, @PathVariable Long productId) {
+        cartService.addToCart(userCartId, productId);
     }
 
-    @GetMapping("/clear/{username}")
-    public void clear(@PathVariable String username) {
-        cartService.clear(username);
+    @GetMapping("/clear/{userCartId}")
+    public void clear(@PathVariable String userCartId) {
+        cartService.clear(userCartId);
     }
 
     @GetMapping("/generateId")
@@ -39,12 +36,5 @@ public class CartController {
         return new StringResponse(UUID.randomUUID().toString());
     }
 
-    @GetMapping("/name/{cartId}")
-    public void nameCart(@PathVariable String cartId, @RequestHeader String username){
-        cartService.assignName(cartId, username);
-    }
 
-    private static String selectCartId(String username, String userCartId) {
-        return username == null ? userCartId : username;
-    }
 }
