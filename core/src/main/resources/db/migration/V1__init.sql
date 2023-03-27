@@ -38,7 +38,8 @@ create table order_items
 -- Filling
 insert into categories(title)
 values ('Product'),
-       ('Hats');
+       ('Hats'),
+       ('Drug');
 
 insert into products(title, price, category_id)
 values ('Quark', 70.89, 1),
@@ -48,4 +49,4 @@ values ('Quark', 70.89, 1),
        ('Sock hat', 450.45, 2),
        ('Fez', 654.34, 2),
        ('Fez2', 654.34, 2),
-       ('Fez3', 654.34, 2);
+       ('Fez3', 654.34, 3);

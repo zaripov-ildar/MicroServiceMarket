@@ -12,11 +12,10 @@ import ru.gb.zaripov.core.exceptions.ResourceNotFoundException;
 public class CartServiceIntegration {
     private final WebClient cartServiceWebClient;
 
-    public CartDto getUserCart(String username) {
+    public CartDto getUserCart(String cartId) {
         return cartServiceWebClient
                 .get()
-                .uri("/api/v1/cart/0")
-                .header("username", username)
+                .uri("/api/v1/cart/" + cartId)
                 .retrieve()
                 .onStatus(
                         HttpStatusCode::is4xxClientError,
@@ -27,10 +26,10 @@ public class CartServiceIntegration {
                 .block();
     }
 
-    public void clear(String username) {
+    public void clear(String cartId) {
         cartServiceWebClient
                 .get()
-                .uri("/api/v1/cart/clear/" + username)
+                .uri("/api/v1/cart/clear/" + cartId)
                 .retrieve()
                 .toBodilessEntity()
                 .block();

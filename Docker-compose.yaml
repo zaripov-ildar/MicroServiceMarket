@@ -1,0 +1,30 @@
+version: '2'
+services:
+  auth:
+    image: auth:0.0.1-SNAPSHOT
+    build: .
+    container_name: auth
+    ports:
+      - "8100:8100"
+    networks:
+      - market-net
+  cart:
+    image: cart:0.0.1-SNAPSHOT
+    build: .
+    container_name: cart
+    ports:
+      - "8199:8199"
+    environment:
+      - integrations.core-service.url=http://core:8189/core/
+    networks:
+      - market-net
+  core:
+    image: core:0.0.1-SNAPSHOT
+    build: .
+    container_name: core
+    ports:
+      - "8189:8189"
+    environment:
+      - integrations.cart-service.url=http://cart:8199/cart/
+    networks:
+      - market-net
