@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CartConverter {
     private final CartItemConverter cartItemConverter;
-
+    // I've already made mapper here
     public CartDto toCartDto(Cart currentCart) {
         return new CartDto(
                 currentCart.getItems().stream()

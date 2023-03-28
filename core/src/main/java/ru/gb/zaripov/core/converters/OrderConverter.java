@@ -1,6 +1,5 @@
 package ru.gb.zaripov.core.converters;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.gb.zaripov.api.OrderDto;
@@ -16,7 +15,7 @@ public class OrderConverter {
 
     public OrderDto toOrderDto(Order order) {
 
-
+// I've already made mapper here
         return new OrderDto(
                 order.getId(),
                 order.getItemList()

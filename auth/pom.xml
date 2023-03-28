@@ -11,10 +11,12 @@
     </parent>
 
     <artifactId>auth</artifactId>
+    <groupId>ru.gb.zaripov</groupId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -60,7 +62,6 @@
             <groupId>ru.gb.zaripov</groupId>
             <artifactId>api</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
