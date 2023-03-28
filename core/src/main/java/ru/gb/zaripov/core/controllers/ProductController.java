@@ -30,6 +30,7 @@ public class ProductController {
     ) {
         page = Math.max(1, page);
         pageSize = Math.max(1, pageSize);
+        // I've already made mapper here
         return pageConverter.toPageDto(
                 productService.find(page, pageSize, minPrice, maxPrice, titlePart)
                         .map(productConverter::toDto)

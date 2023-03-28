@@ -25,6 +25,7 @@ public class OrderService {
         Order order = new Order();
         order.setUsername(username);
         order.setTotalPrice(cartDto.getTotalPrice());
+        // I've already made mapper here
         order.setItemList(
                 cartDto.getCartItems().stream()
                         .map(cartItemDto -> cartItemConverter.toOrderItem(cartItemDto, order))
