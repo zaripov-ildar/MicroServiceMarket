@@ -2,6 +2,12 @@ server:
   port: 5555
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8150/realms/master
+          jwk-set-uri: http://localhost:8150/realms/master/protocol/openid-connect/certs
   application:
     name: gateway-service
   cloud:
@@ -22,7 +28,6 @@ spring:
           filters:
             - StripPrefix=1
             - PrefixPath=/core
-            - JwtAuthFilter
         - id: cart-service
           uri: http://localhost:8199
           predicates:
@@ -30,16 +35,3 @@ spring:
           filters:
             - StripPrefix=1
             - PrefixPath=/cart
-            - JwtAuthFilter
-        - id: auth-service
-          uri: http://localhost:8100
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=1
-            - PrefixPath=/auth
-            - JwtAuthFilter
-
-jwt:
-  secret: h4f8093h4f983yhrt9834hr0934hf0hf493g493gf438rh438th34g34g
-#FIXME: response on order creating request: 400 bad request
